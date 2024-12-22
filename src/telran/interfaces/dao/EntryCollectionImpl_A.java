@@ -20,23 +20,22 @@ public class EntryCollectionImpl_A implements EntityCollection {
         entryCol.put(entity.getValue(), entity);
     }
 
-    //O(log n)
+    //O(n)
     @Override
     public Entity removeMaxValue() {
         if (entryCol.isEmpty()){
             return null;
         }
 
-        List<Integer> list = new ArrayList<>(entryCol.keySet());
-        int index = Collections.binarySearch(list, Integer.MAX_VALUE, comparator);
+        Integer index = entryCol.keySet().stream()
+                .max(comparator)
+                .orElse(null);
+        if (index != null) {
+            Entity victim = entryCol.get(index);
+            entryCol.remove(index);
+            return victim;
+        }
 
-        index = index < 0? -index - 1: index;
-
-        int key = list.get(index);
-
-        Entity victim = entryCol.get(key);
-        entryCol.remove(key);
-
-        return victim;
+        return null;
     }
 }
